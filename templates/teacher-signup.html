@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Signup</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6A4C9C;
+            --primary-dark: #553C9A;
+            --secondary-color: #9F7AEA;
+            --accent-color: #B794F4;
+            --text-light: #E9D8FD;
+            --white: #ffffff;
+            --shadow: rgba(106, 76, 156, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary-color));
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--text-light);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 28px;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--text-light);
+            width: 100%; /* Full width for labels */
+        }
+
+        .form-group .input-container {
+            flex-basis: 48%;
+            margin-bottom: 10px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid var(--accent-color);
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        /* Adjust inputs on mobile for full-width */
+        @media (max-width: 600px) {
+            .form-group input {
+                width: 100%;
+            }
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .signup-link p {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        function validateForm(event) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const facultyId = document.getElementById('faculty_id').value;
+            const name = document.getElementById('name').value;
+            const department = document.getElementById('department').value;
+            const roles = document.getElementById('roles').value;
+            const errorMessage = document.getElementById('error-message');
+
+            // Clear previous error messages
+            errorMessage.style.display = 'none';
+
+            // Basic email validation
+            if (!email.endsWith('@rvce.edu.in')) {
+                event.preventDefault(); // Prevent form submission
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = "Please provide a valid RVCE email ID (e.g., example@rvce.edu.in).";
+                return;
+            }
+
+            // Password length check
+            if (password.length < 6) {
+                event.preventDefault();
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = "Password must be at least 6 characters long.";
+                return;
+            }
+
+            // Check if password contains at least one uppercase, one lowercase, and one digit
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+            if (!passwordRegex.test(password)) {
+                event.preventDefault();
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
+                return;
+            }
+
+            // Check if password and confirm password match
+            if (password !== confirmPassword) {
+                event.preventDefault();
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = "Passwords do not match.";
+                return;
+            }
+
+            // Ensure all fields are filled out
+            if (!facultyId || !name || !department || !roles) {
+                event.preventDefault();
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = "Please fill out all fields.";
+                return;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Teacher Signup</h1>
+        <form action="/teacher-signup" method="POST" onsubmit="validateForm(event)">
+            <!-- Client-side error message -->
+            <div id="error-message" class="error-message"></div>
+
+            <div class="form-group">
+                <div class="input-container">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-container">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <div class="input-container">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="Confirm your password">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-container">
+                    <label for="faculty_id">Faculty ID</label>
+                    <input type="text" id="faculty_id" name="faculty_id" required placeholder="Enter your Faculty ID">
+                </div>
+                <div class="input-container">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-container">
+                    <label for="department">Department</label>
+                    <input type="text" id="department" name="department" required placeholder="Enter your department">
+                </div>
+                <div class="input-container">
+                    <label for="roles">Roles</label>
+                    <input type="text" id="roles" name="roles" required placeholder="Enter your roles">
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Signup</button>
+        </form>
+    </div>
+</body>
+</html>

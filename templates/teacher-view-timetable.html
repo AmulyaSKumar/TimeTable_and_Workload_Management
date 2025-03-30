@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Timetable</title>
+    <style>
+        /* Base reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body and container styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #D8B0F7, #F1E1FF);
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Header Styling */
+        .header {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #6A4C9C;
+        }
+
+        /* Logout and Back button styling */
+        .logout-btn, .back-btn {
+            position: absolute;
+            top: 20px;
+            padding: 10px 20px;
+            background-color: #6A4C9C;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .logout-btn:hover, .back-btn:hover {
+            background-color: #4B0082;
+        }
+
+        .back-btn {
+            left: 20px;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #6A4C9C;
+            color: white;
+            font-weight: bold;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f1f1f1;
+        }
+
+        tr:hover td {
+            background-color: #ececec;
+        }
+
+        /* Purple color for the first column (weekdays) */
+        tr td:first-child {
+            background-color: #6A4C9C;
+            color: white;
+        }
+
+        /* Light yellow background for break blocks */
+        .break-row {
+            background-color: #fff8b2;
+        }
+
+        .break-row td {
+            color: #333;
+            font-style: italic;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                font-size: 20px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logout button -->
+        <a href="/logout">
+            <button class="logout-btn">Logout</button>
+        </a>
+        <!-- Back button -->
+        <a href="/teacher-entry">
+            <button class="back-btn">Back</button>
+        </a>
+
+        <!-- Page Header -->
+        <h3 class="header">Personized Timetable </h3>
+
+        <!-- Timetable Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Day/Time</th>
+                    <th>9:00-10:00</th>
+                    <th>10:00-11:00</th>
+                    <th>11:00-11:30</th>
+                    <th>11:30-12:30</th>
+                    <th>12:30-1:30</th>
+                    <th>1:30-2:30</th>
+                    <th>2:30-3:30</th>
+                    <th>3:30-4:30</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] %}
+                <tr>
+                    <td>{{ day }}</td>
+                    {% for time_slot in ["9:00-10:00", "10:00-11:00", "11:00-11:30", "11:30-12:30", "12:30-1:30", "1:30-2:30", "2:30-3:30", "3:30-4:30"] %}
+                        {% if time_slot == "11:00-11:30" or time_slot == "1:30-2:30" %}
+                            <td class="break-row">Break</td>
+                        {% else %}
+                            {% set course = slots | selectattr("slot", "equalto", time_slot) | selectattr("day", "equalto", day) | first %}
+                            {% if course %}
+                                {% if course.slot == "9:00-11:00" %}
+                                    <td colspan="2">
+                                        <strong>{{ course.course_name }}</strong><br>
+                                        Semester: {{ course.semester }}<br>
+                                    </td>
+                                {% elif course.slot == "1:30-3:30" %}
+                                    <td colspan="2">
+                                        <strong>{{ course.course_name }}</strong><br>
+                                        Semester: {{ course.semester }}<br>
+                                    </td>
+                                {% else %}
+                                    <td>
+                                        <strong>{{ course.course_name }}</strong><br>
+                                        Semester: {{ course.semester }}<br>
+                                    </td>
+                                {% endif %}
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
